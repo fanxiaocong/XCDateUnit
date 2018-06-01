@@ -1,12 +1,12 @@
 
 Pod::Spec.new do |s|
 
-  s.name         = "XCDateUnitSpec"
-  s.version      = "0.0.1"
+  s.name         = "XCDateUnit"
+  s.version      = "0.0.2"
   s.summary      = "与时间有关的工具类"
 
   s.description  = <<-DESC
-XCDateUnitSpec，与时间有关的工具类
+XCDateUnit，与时间有关的工具类
                    DESC
 
   s.homepage     = "https://github.com/fanxiaocong/XCDateUnit"
