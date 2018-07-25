@@ -24,6 +24,75 @@
     return NO;
 }
 
++ (BOOL)isLeapYearOfDate:(NSDate *)date
+{
+    NSString *year = [self stringFromDate:date format:@"yyyy"];
+    return [self isLeapYear:year.integerValue];
+}
+
++ (BOOL)isEqualYearBetweenDate:(NSDate *)date andDate:(NSDate *)otherDate
+{
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+
+    NSDateComponents *componentsA = [calendar components:NSCalendarUnitYear fromDate:date];
+    NSDateComponents *componentsB = [calendar components:NSCalendarUnitYear fromDate:otherDate];
+    
+    return componentsA.year == componentsB.year;
+}
+
++ (BOOL)isEqualYearMonthBetweenDate:(NSDate *)date andDate:(NSDate *)otherDate
+{
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    
+    NSDateComponents *componentsA = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth fromDate:date];
+    NSDateComponents *componentsB = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth fromDate:otherDate];
+    
+    return (componentsA.year == componentsB.year) && (componentsA.month == componentsB.month);
+}
+
++ (BOOL)isEqualYearMonthDayBetweenDate:(NSDate *)date andDate:(NSDate *)otherDate
+{
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    
+    NSDateComponents *componentsA = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:date];
+    NSDateComponents *componentsB = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:otherDate];
+    
+    return (componentsA.year == componentsB.year)   &&
+           (componentsA.month == componentsB.month) &&
+           (componentsA.day == componentsB.day);
+}
+
++ (BOOL)date:(NSDate *)dateA isEqualOrBefore:(NSDate *)dateB
+{
+    if([dateA compare:dateB] == NSOrderedAscending ||
+       [self isEqualYearMonthDayBetweenDate:dateA andDate:dateB])
+    {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)date:(NSDate *)dateA isEqualOrAfter:(NSDate *)dateB
+{
+    if([dateA compare:dateB] == NSOrderedDescending ||
+       [self isEqualYearMonthDayBetweenDate:dateA andDate:dateB])
+    {
+        return YES;
+    }
+    return NO;
+}
+    
+
++ (BOOL)date:(NSDate *)date isEqualOrAfter:(NSDate *)startDate andEqualOrBefore:(NSDate *)endDate
+{
+    if([self date:date isEqualOrAfter:startDate] &&
+       [self date:date isEqualOrBefore:endDate])
+    {
+        return YES;
+    }
+    return NO;
+}
+
 + (NSString *)weekday
 {
     return [self weekdayOfDate:[NSDate date]];
@@ -41,7 +110,7 @@
 
 + (NSString *)stringFromDate:(NSDate *)date format:(NSString *)fmt
 {
-    NSDateFormatter *dateFmt = [[NSDateFormatter alloc] init];
+    NSDateFormatter *dateFmt = [self cacheDateFormatter];
     [dateFmt setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]];
     [dateFmt setDateFormat:fmt];
     return [dateFmt stringFromDate:date];
@@ -51,7 +120,7 @@
 + (NSString *)stringFromMilliseconds:(NSString *)milliseconds format:(NSString *)fmt
 {
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:(milliseconds.floatValue * 0.001)];
-    NSDateFormatter *dateFmt = [[NSDateFormatter alloc] init];
+    NSDateFormatter *dateFmt = [self cacheDateFormatter];
     [dateFmt setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]];
     [dateFmt setDateFormat:fmt];
     return [dateFmt stringFromDate:date];
@@ -60,12 +129,17 @@
 
 + (NSDate *)dateFromString:(NSString *)string format:(NSString *)fmt
 {
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    NSDateFormatter *dateFormat = [self cacheDateFormatter];
     [dateFormat setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]];
     [dateFormat setDateFormat:fmt];
     return [dateFormat dateFromString:string];
 }
 
++ (NSDate *)dateFromDate:(NSDate *)date format:(NSString *)fmt
+{
+    NSString *dateString = [self stringFromDate:date format:fmt];
+    return [self dateFromString:dateString format:fmt];
+}
 
 + (NSDate *)dateByDate:(NSDate *)date offsetDays:(NSInteger)days
 {
@@ -148,6 +222,15 @@
     NSCalendarUnitWeekdayOrdinal;
     
     return [calendar components:flags fromDate:date];
+}
+
+static NSDateFormatter *_dateFormatter = nil;
++ (NSDateFormatter *)cacheDateFormatter
+{
+    if (!_dateFormatter) {
+        _dateFormatter = [[NSDateFormatter alloc] init];
+    }
+    return _dateFormatter;
 }
 
 @end
