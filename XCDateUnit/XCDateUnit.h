@@ -74,12 +74,21 @@
 + (NSInteger)daysBetweenDate:(NSDate *)beginDate endDate:(NSDate *)endDate;
 + (NSInteger)monthsBetweenDate:(NSDate *)beginDate endDate:(NSDate *)endDate;
 
+
 /**
  *  当月有多少天
  *  某年的某月有多少天
+ *  当月的第一天
+ *  指定日期所在月份的第一天
+ *  当月的最后一天
+ *  指定日期所在月份的最后一天
  */
 + (NSInteger)daysOfCurrentMonth;
 + (NSInteger)daysOfYear:(NSInteger)year month:(NSInteger)month;
++ (NSDate *)dateMonthBegin;
++ (NSDate *)dateMonthBeginOfDate:(NSDate *)date;
++ (NSDate *)dateMonthEnd;
++ (NSDate *)dateMonthEndOfDate:(NSDate *)date;
 
 
 @end

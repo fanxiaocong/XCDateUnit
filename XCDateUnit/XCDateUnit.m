@@ -207,7 +207,47 @@
     return 30;
 }
 
++ (NSDate *)dateMonthBegin
+{
+    return [self dateMonthBeginOfDate:[NSDate date]];
+}
+
++ (NSDate *)dateMonthBeginOfDate:(NSDate *)date
+{
+    return [self dateInMonth:date isBegin:YES];
+}
+
++ (NSDate *)dateMonthEnd
+{
+    return [self dateMonthEndOfDate:[NSDate date]];
+}
+
++ (NSDate *)dateMonthEndOfDate:(NSDate *)date
+{
+    return [self dateInMonth:date isBegin:NO];
+}
+
 #pragma mark - 🔒 👀 Privite Method 👀
+
++ (NSDate *)dateInMonth:(NSDate *)date isBegin:(BOOL)isBegin
+{
+    NSDate *newDate = [NSDate date];
+    NSTimeInterval interval = 0;
+    NSDate *beginDate = nil;
+    NSDate *endDate = nil;
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    [calendar setFirstWeekday:2];
+    BOOL flag = [calendar rangeOfUnit:NSCalendarUnitMonth startDate:&beginDate interval:&interval forDate:newDate];
+    if (flag) {
+        endDate = [beginDate dateByAddingTimeInterval:interval-1];
+    } else {
+        return nil;
+    }
+    if (isBegin) {
+        return beginDate;
+    }
+    return endDate;
+}
 
 + (NSDateComponents *)dateComponentsWithDate:(NSDate *)date
 {
