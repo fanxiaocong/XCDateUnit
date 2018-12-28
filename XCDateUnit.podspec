@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "XCDateUnit"
-  s.version      = "0.0.4"
+  s.version      = "0.0.5"
   s.summary      = "与时间有关的工具类"
 
   s.description  = <<-DESC

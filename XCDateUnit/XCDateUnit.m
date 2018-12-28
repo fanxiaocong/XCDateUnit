@@ -119,7 +119,7 @@
 
 + (NSString *)stringFromMilliseconds:(NSString *)milliseconds format:(NSString *)fmt
 {
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:(milliseconds.floatValue * 0.001)];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:(milliseconds.doubleValue * 0.001)];
     NSDateFormatter *dateFmt = [self cacheDateFormatter];
     [dateFmt setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]];
     [dateFmt setDateFormat:fmt];
